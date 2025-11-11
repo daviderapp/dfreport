@@ -29,6 +29,13 @@ export async function POST(request: NextRequest) {
 
     // Valida il body della richiesta
     const body = await request.json();
+
+    // 🔍 AGGIUNGI QUESTI LOG
+    console.log('📦 Body ricevuto:', body);
+    console.log('📝 Tipo categoria:', typeof body.categoria, body.categoria);
+    console.log('📝 Tipo responsabile:', typeof body.responsabile, body.responsabile);
+    console.log('🔢 Enum CategoriaSpesa:', Object.values(CategoriaSpesa));
+    console.log('🔢 Enum ResponsabileSpesa:', Object.values(ResponsabileSpesa));
     const validationResult = createSpesaSchema.safeParse(body);
 
     if (!validationResult.success) {

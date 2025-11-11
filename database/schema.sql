@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS membri_famiglia (
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, famiglia_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (famiglia_id) REFERENCES famiglia(id) ON DELETE CASCADE,
+    FOREIGN KEY (famiglia_id) REFERENCES famiglie(id) ON DELETE CASCADE,
     INDEX idx_famiglia (famiglia_id),
     INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS abitazioni (
     descrizione TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (famiglia_id) REFERENCES famiglia(id) ON DELETE CASCADE,
+    FOREIGN KEY (famiglia_id) REFERENCES famiglie(id) ON DELETE CASCADE,
     INDEX idx_famiglia (famiglia_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS movimenti (
     responsabile ENUM('PERSONALE', 'FAMILIARE'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (famiglia_id) REFERENCES famiglia(id) ON DELETE CASCADE,
+    FOREIGN KEY (famiglia_id) REFERENCES famiglie(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_famiglia (famiglia_id),
     INDEX idx_user (user_id),
