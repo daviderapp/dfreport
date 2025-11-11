@@ -89,7 +89,7 @@ export default async function DashboardPage() {
   const famiglia = famiglie[0];
   const famigliaRepository = new MySQLFamigliaRepository();
   const membro = await famigliaRepository.getMembro(userId, famiglia.id);
-  const isLavoratore = membro?.isLavoratore ?? false;
+  const isLavoratore = membro?.ruolo === 'LAVORATORE';
 
   // L'utente può gestire introiti se è CAPOFAMIGLIA o LAVORATORE
   const canManageIntroiti = isCapofamiglia || isLavoratore;

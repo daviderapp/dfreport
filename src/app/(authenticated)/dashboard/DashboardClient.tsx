@@ -237,42 +237,6 @@ export default function DashboardClient({ isCapofamiglia, canManageIntroiti }: D
         </div>
       )}
 
-      {/* Quick Links */}
-      {isCapofamiglia && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link href="/famiglia/membri">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="py-4">
-                <div className="text-center">
-                  <span className="text-2xl mb-2 block">👥</span>
-                  <span className="font-semibold">Gestione Membri</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/report">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="py-4">
-                <div className="text-center">
-                  <span className="text-2xl mb-2 block">📊</span>
-                  <span className="font-semibold">Report</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/abitazioni">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="py-4">
-                <div className="text-center">
-                  <span className="text-2xl mb-2 block">🏠</span>
-                  <span className="font-semibold">Abitazioni</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-      )}
-
       <div className={`grid grid-cols-1 ${canManageIntroiti ? 'lg:grid-cols-2' : ''} gap-6`}>
         {/* Sezione Spese */}
         <Card>

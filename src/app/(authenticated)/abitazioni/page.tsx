@@ -3,9 +3,8 @@ import { getUserFamiglie } from '@/lib/user-helpers';
 import { MySQLFamigliaRepository } from '@/repositories/mysql/FamigliaRepository';
 import { MySQLAbitazioneRepository } from '@/repositories/mysql/AbitazioneRepository';
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { redirect } from 'next/navigation';
-import AbitazioniList from './AbitazioniList';
 
 export default async function GestioneMembriPage() {
   const session = await getCurrentSession();
@@ -45,14 +44,21 @@ export default async function GestioneMembriPage() {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Membri della Famiglia</CardTitle>
-        </CardHeader>
-            <AbitazioniList
-              abitazioni={abitazioni}
-              famigliaId={famiglia.id}
-            />
+      {/* Messaggio Work in Progress */}
+      <Card className="border-2 border-yellow-400 bg-yellow-50">
+        <CardContent className="py-12">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🚧</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Funzionalità in Sviluppo
+            </h2>
+            <p className="text-gray-600 max-w-md mx-auto">
+              La gestione delle abitazioni è attualmente in fase di sviluppo.
+              Questa funzionalità sarà presto disponibile per permetterti di gestire
+              le proprietà della tua famiglia.
+            </p>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

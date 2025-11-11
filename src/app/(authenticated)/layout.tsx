@@ -28,7 +28,7 @@ export default async function AuthenticatedLayout({
     const membro = await famigliaRepository.getMembro(userId, famiglia.id);
 
     isCapofamiglia = membro?.ruolo === 'CAPOFAMIGLIA';
-    isLavoratore = membro?.isLavoratore ?? false;
+    isLavoratore = membro?.ruolo === 'LAVORATORE';
   }
 
   return (

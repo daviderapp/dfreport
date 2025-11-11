@@ -40,7 +40,7 @@ export function Navbar({ user, hasFamiglia, isCapofamiglia = false, isLavoratore
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white shadow-sm border-b" style={{ padding: "10px" }}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* ROW DESKTOP: 3 COLONNE */}
         <div className="flex h-16 items-center">
