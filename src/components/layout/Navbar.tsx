@@ -20,7 +20,7 @@ export function Navbar({ user, hasFamiglia, isCapofamiglia = false, isLavoratore
   const pathname = usePathname();
 
   const navLinks = [
-    // Se non ha famiglia, mostra SOLO gestione profilo
+    // Se non ha famiglia, mostra SOLO gestione profilo e opzioni famiglia
     ...(!hasFamiglia ? [
       { href: '/profilo', label: 'Gestione Profilo' },
     ] : []),

@@ -12,7 +12,7 @@ import {
   CreateIntroitoDTO,
   TipoMovimento,
 } from '@/types/movimento.types';
-import { canCreateMovimenti, canViewMovimenti, AuthorizationError } from '@/lib/auth-helpers';
+import { canCreateMovimenti, canViewMovimenti, canManageIntroiti, AuthorizationError } from '@/lib/auth-helpers';
 
 /**
  * Service per la gestione dei Movimenti (Spese e Introiti)
@@ -48,13 +48,14 @@ export class MovimentoService {
 
   /**
    * Crea un nuovo introito
+   * Solo CAPOFAMIGLIA e LAVORATORE possono creare introiti
    */
   async createIntroito(data: CreateIntroitoDTO): Promise<Movimento> {
-    // Verifica autorizzazione
+    // Verifica autorizzazione - solo CAPOFAMIGLIA e LAVORATORE
     const membro = await this.famigliaRepository.getMembro(data.userId, data.famigliaId);
 
-    if (!canCreateMovimenti(membro)) {
-      throw new AuthorizationError('Non hai i permessi per creare movimenti');
+    if (!canManageIntroiti(membro)) {
+      throw new AuthorizationError('Solo il Capofamiglia e i Lavoratori possono gestire gli introiti');
     }
 
     // Crea l'introito

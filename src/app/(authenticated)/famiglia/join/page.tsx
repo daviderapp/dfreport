@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export default function JoinFamigliaPage() {
   const router = useRouter();
+  const { update } = useSession();
   const [codiceInvito, setCodiceInvito] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +34,16 @@ export default function JoinFamigliaPage() {
         setError(data.error || 'Errore durante l\'adesione alla famiglia');
       } else {
         // Adesione completata con successo
-        router.push('/famiglia?joined=true');
+        // Forza il refresh della sessione per aggiornare famigliaId nel JWT
+        await update();
+
+        // Attendi che la sessione sia aggiornata prima di navigare
+        // Questo assicura che il JWT token abbia il nuovo famigliaId
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Forza un refresh della pagina per assicurare che tutto sia aggiornato
+        router.push('/dashboard');
+        router.refresh();
       }
     } catch (err) {
       setError('Errore di connessione al server');

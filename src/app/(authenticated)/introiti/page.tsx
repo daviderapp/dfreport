@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { CategoriaIntroito } from '@/types/movimento.types';
+import Link from 'next/link';
 
 interface Introito {
   id: string;
@@ -40,7 +41,8 @@ export default function IntroitiPage() {
       const response = await fetch(`/api/introiti/miei?mese=${mese}&anno=${anno}`);
 
       if (!response.ok) {
-        throw new Error('Errore nel caricamento degli introiti');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Errore nel caricamento degli introiti');
       }
 
       const data = await response.json();
@@ -149,6 +151,32 @@ export default function IntroitiPage() {
 
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Caricamento...</div>;
+  }
+
+  // Mostra messaggio di errore se l'utente non ha i permessi
+  if (error && error.includes('permessi')) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">Accesso Negato</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-gray-700">
+                {error}
+              </p>
+              <p className="text-sm text-gray-600">
+                Solo il <strong>Capofamiglia</strong> e i <strong>Lavoratori</strong> possono visualizzare e gestire gli introiti.
+              </p>
+              <Link href="/dashboard">
+                <Button variant="primary">Torna alla Dashboard</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

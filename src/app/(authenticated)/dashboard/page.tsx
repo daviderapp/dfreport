@@ -5,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import DashboardClient from './DashboardClient';
-import Script from 'next/script';
 
 export default async function DashboardPage() {
   const session = await getCurrentSession();
@@ -87,30 +86,27 @@ export default async function DashboardPage() {
   // Dashboard per utente CON famiglia
   const isCapofamiglia = ruoloInFamiglia === 'CAPOFAMIGLIA';
   const famiglie = await getUserFamiglie(userId);
-  const famigliaId = famiglie[0]?.id;
+  const famiglia = famiglie[0];
+  const famigliaRepository = new MySQLFamigliaRepository();
+  const membro = await famigliaRepository.getMembro(userId, famiglia.id);
+  const isLavoratore = membro?.isLavoratore ?? false;
+
+  // L'utente può gestire introiti se è CAPOFAMIGLIA o LAVORATORE
+  const canManageIntroiti = isCapofamiglia || isLavoratore;
 
   return (
-    <>
-      <Script
-        id="famiglia-id"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `window.__FAMIGLIA_ID__ = "${famigliaId}";`,
-        }}
-      />
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Benvenuto, {session?.user?.nome}!
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Gestisci le tue finanze familiari
-            {ruoloInFamiglia && <span className="ml-2 text-sm font-semibold text-green-600">({ruoloInFamiglia})</span>}
-          </p>
-        </div>
-
-        <DashboardClient isCapofamiglia={isCapofamiglia} />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Benvenuto, {session?.user?.nome}!
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Gestisci le tue finanze familiari
+          {ruoloInFamiglia && <span className="ml-2 text-sm font-semibold text-green-600">({ruoloInFamiglia})</span>}
+        </p>
       </div>
-    </>
+
+      <DashboardClient isCapofamiglia={isCapofamiglia} canManageIntroiti={canManageIntroiti} />
+    </div>
   );
 }

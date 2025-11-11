@@ -39,6 +39,14 @@ export function canCreateMovimenti(membro: MembroFamiglia | null): boolean {
 }
 
 /**
+ * Verifica se un utente può gestire gli introiti
+ * (solo Capofamiglia e Lavoratore)
+ */
+export function canManageIntroiti(membro: MembroFamiglia | null): boolean {
+  return hasRole(membro, UserRole.CAPOFAMIGLIA, UserRole.LAVORATORE);
+}
+
+/**
  * Verifica se un utente può gestire i membri della famiglia
  * (solo Capofamiglia)
  */

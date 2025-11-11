@@ -39,6 +39,9 @@ export default function NuovaFamigliaPage() {
         // Famiglia creata con successo - aggiorna la sessione
         await update();
 
+        // Attendi che la sessione sia aggiornata
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         // Mostra modal con codice invito
         setCodiceInvito(data.data.codiceInvito);
         setShowModal(true);
@@ -63,6 +66,10 @@ export default function NuovaFamigliaPage() {
     setShowModal(false);
     // Aggiorna la sessione prima di reindirizzare (per sicurezza)
     await update();
+
+    // Attendi che la sessione sia aggiornata
+    await new Promise(resolve => setTimeout(resolve, 300));
+
     // Reindirizza alla dashboard e forza il refresh
     router.push('/dashboard');
     router.refresh();

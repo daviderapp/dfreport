@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -26,9 +27,12 @@ interface Introito {
 
 interface DashboardClientProps {
   isCapofamiglia: boolean;
+  canManageIntroiti: boolean;
 }
 
-export default function DashboardClient({ isCapofamiglia }: DashboardClientProps) {
+export default function DashboardClient({ isCapofamiglia, canManageIntroiti }: DashboardClientProps) {
+  const { data: session, status } = useSession();
+  const famigliaId = (session?.user as any)?.famigliaId;
   const [spese, setSpese] = useState<Spesa[]>([]);
   const [introiti, setIntroiti] = useState<Introito[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,19 +90,26 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (famigliaId) {
+      fetchData();
+    }
+  }, [famigliaId]);
 
   const handleCreateSpesa = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!famigliaId) {
+      setError('Errore: famigliaId non disponibile. Ricarica la pagina.');
+      return;
+    }
 
     try {
       const response = await fetch('/api/spese/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          famigliaId: (window as any).__FAMIGLIA_ID__,
+          famigliaId,
           descrizione: spesaForm.descrizione,
           importo: parseFloat(spesaForm.importo),
           data: spesaForm.data,
@@ -143,12 +154,17 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
     e.preventDefault();
     setError('');
 
+    if (!famigliaId) {
+      setError('Errore: famigliaId non disponibile. Ricarica la pagina.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/introiti/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          famigliaId: (window as any).__FAMIGLIA_ID__,
+          famigliaId,
           descrizione: introitoForm.descrizione,
           importo: parseFloat(introitoForm.importo),
           data: introitoForm.data,
@@ -198,8 +214,19 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
     return new Date(dateString).toLocaleDateString('it-IT');
   };
 
-  if (loading) {
+  // Show loading state while session is loading or famiglia is not yet available
+  if (status === 'loading' || (loading && !famigliaId)) {
     return <div className="text-center py-8">Caricamento...</div>;
+  }
+
+  // If session is loaded but no famigliaId, show error
+  if (!famigliaId) {
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg">
+        <p className="font-semibold">Famiglia non disponibile</p>
+        <p className="text-sm mt-1">Ricarica la pagina per aggiornare la sessione.</p>
+      </div>
+    );
   }
 
   return (
@@ -246,7 +273,7 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={`grid grid-cols-1 ${canManageIntroiti ? 'lg:grid-cols-2' : ''} gap-6`}>
         {/* Sezione Spese */}
         <Card>
           <CardHeader>
@@ -339,7 +366,8 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
           </CardContent>
         </Card>
 
-        {/* Sezione Introiti */}
+        {/* Sezione Introiti - Solo per CAPOFAMIGLIA e LAVORATORE */}
+        {canManageIntroiti && (
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -418,6 +446,7 @@ export default function DashboardClient({ isCapofamiglia }: DashboardClientProps
             )}
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );
